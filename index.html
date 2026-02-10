@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>PANDU-GI | Modern App</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. MODERN VARIABLES --- */
+        :root {
+            /* Palette */
+            --primary: #3b82f6; 
+            --primary-gradient: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --secondary: #64748b;
+            --bg-body: #f8fafc;
+            --surface: #ffffff;
+            
+            /* Text */
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --text-muted: #94a3b8;
+
+            /* Accents */
+            --accent-blue: #dbeafe; --text-blue: #1d4ed8;
+            --accent-green: #d1fae5; --text-green: #047857;
+            --accent-purple: #ede9fe; --text-purple: #6d28d9;
+            --accent-orange: #ffedd5; --text-orange: #c2410c;
+            --accent-gray: #f1f5f9; --text-gray: #475569;
+
+            /* UI Elements */
+            --radius-xl: 28px;
+            --radius-lg: 20px;
+            --radius-md: 14px;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --shadow-card: 0 4px 20px -2px rgba(0,0,0,0.03);
+            
+            /* Safe Area */
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* Dark Mode Override */
+        [data-theme="dark"] {
+            --bg-body: #0f172a;
+            --surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --accent-gray: #334155;
+            --shadow-soft: none;
+            --shadow-card: none;
+        }
+
+        /* RESET */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            padding-bottom: calc(30px + var(--safe-bottom));
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- 2. COMPONENTS --- */
+        
+        /* Modern Button */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 8px 20px -4px rgba(59, 130, 246, 0.4); }
+        .btn-secondary { background: var(--surface); color: var(--text-main); border: 1px solid #e2e8f0; }
+        .btn-success { background: #10b981; color: white; box-shadow: 0 8px 20px -4px rgba(16, 185, 129, 0.3); }
+        .btn-purple { background: #8b5cf6; color: white; box-shadow: 0 8px 20px -4px rgba(139, 92, 246, 0.3); }
+        .btn-danger { background: #fee2e2; color: #ef4444; }
+
+        /* Modern Input */
+        .input-group { position: relative; margin-bottom: 15px; }
+        input, textarea, select {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid transparent;
+            background: var(--bg-body);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text-main);
+            transition: 0.2s;
+        }
+        input:focus, textarea:focus { background: var(--surface); border-color: var(--primary); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+        .card input { background: #f1f5f9; }
+
+        /* --- 3. LAYOUT & HEADER --- */
+        .header {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 15px 20px;
+            padding-top: calc(15px + var(--safe-top));
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        [data-theme="dark"] .header { background: rgba(30, 41, 59, 0.8); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        .app-logo { font-weight: 800; font-size: 20px; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-back-nav {
+            background: rgba(0,0,0,0.05); border: none;
+            width: 36px; height: 36px; border-radius: 12px;
+            color: var(--text-main); display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer; transition: 0.2s;
+        }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; min-height: 85vh; }
+
+        /* --- 4. LOGIN SCREEN (Hero Style) --- */
+        #unit-select-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 30px; background: var(--surface);
+            background-image: radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 20%), radial-gradient(circle at 90% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 20%);
+        }
+        .login-card {
+            width: 100%; max-width: 400px;
+            background: rgba(255,255,255,0.5); backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            padding: 10px;
+        }
+        .search-hero {
+            position: relative;
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            padding: 8px; border: 1px solid rgba(0,0,0,0.05);
+            transition: 0.3s;
+        }
+        .search-hero:focus-within { transform: translateY(-2px); box-shadow: 0 15px 40px -10px rgba(59, 130, 246, 0.2); border-color: var(--primary); }
+        .search-hero input { background: transparent; border: none; padding: 15px; font-weight: 600; font-size: 16px; }
+        .search-hero svg { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+
+        .unit-list-pop {
+            margin-top: 15px; background: var(--surface);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-card);
+            max-height: 300px; overflow-y: auto;
+            display: none; padding: 10px;
+        }
+        .unit-item { padding: 16px; border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.1s; display: flex; align-items: center; justify-content: space-between; }
+        .unit-item:active { background: var(--bg-body); transform: scale(0.98); }
+        .unit-item span { font-size: 18px; }
+
+        /* --- 5. DASHBOARD (Bento Grid) --- */
+        .dash-header { margin-bottom: 30px; }
+        .dash-title { font-size: 24px; font-weight: 800; margin: 0; color: var(--text-main); }
+        .dash-sub { font-size: 14px; color: var(--text-sub); display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+        
+        .bento-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .bento-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 24px 20px;
+            display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between;
+            height: 160px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer; position: relative; overflow: hidden;
+        }
+        .bento-card:active { transform: scale(0.96); }
+        
+        /* Card Icons & Colors */
+        .bc-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: auto; }
+        .bc-title { font-weight: 700; font-size: 15px; line-height: 1.2; color: var(--text-main); margin-top: 15px; }
+        .bc-desc { font-size: 12px; color: var(--text-sub); margin-top: 4px; font-weight: 500; }
+
+        .bc-blue .bc-icon { background: var(--accent-blue); color: var(--text-blue); }
+        .bc-green .bc-icon { background: var(--accent-green); color: var(--text-green); }
+        .bc-purple .bc-icon { background: var(--accent-purple); color: var(--text-purple); }
+        .bc-orange .bc-icon { background: var(--accent-orange); color: var(--text-orange); }
+        .bc-gray .bc-icon { background: var(--accent-gray); color: var(--text-gray); }
+
+        /* Full Width Card */
+        .bento-full { grid-column: span 2; height: auto; flex-direction: row; align-items: center; gap: 20px; }
+        .bento-full .bc-icon { margin-bottom: 0; width: 56px; height: 56px; font-size: 28px; }
+        .bento-full .bc-title { margin-top: 0; font-size: 16px; }
+
+        /* --- 6. CONTENT CARDS --- */
+        .app-section { display: none; padding-top: 10px; animation: slideIn 0.3s; }
+        .app-section.active { display: block; }
+
+        .modern-card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            box-shadow: var(--shadow-card);
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        .mc-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .mc-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        
+        /* List Item */
+        .list-item {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .li-content { flex: 1; margin-right: 15px; }
+        .li-title { font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px; }
+        .li-sub { font-size: 12px; color: var(--text-sub); }
+        
+        /* Action Buttons Small */
+        .btn-xs { padding: 8px 14px; font-size: 12px; border-radius: 10px; width: auto; display: inline-flex; }
+
+        /* --- 7. MODAL --- */
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 999; display: none; align-items: flex-end; }
+        .modal-sheet {
+            background: var(--surface);
+            width: 100%; max-width: 600px; margin: 0 auto;
+            border-radius: 28px 28px 0 0;
+            padding: 30px 25px;
+            max-height: 90vh; overflow-y: auto;
+            animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.1);
+        }
+        .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .close-btn { background: var(--bg-body); border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; color: var(--text-sub); }
+
+        /* PDF Viewer */
+        .pdf-viewer { position: fixed; inset: 0; background: #fff; z-index: 2000; display: none; flex-direction: column; }
+        .pdf-nav { padding: 15px 20px; padding-top: calc(15px + var(--safe-top)); border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .pdf-frame { flex: 1; border: none; background: #f1f5f9; }
+
+        @keyframes slideIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Loader */
+        #loader { position: fixed; inset: 0; background: rgba(255,255,255,0.8); backdrop-filter: blur(5px); z-index: 3000; display: none; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #e2e8f0; border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="unit-select-screen">
+        <div style="text-align:center; width:100%; max-width:400px;">
+            <div style="font-size:48px; margin-bottom:15px;">⚡</div>
+            <h1 style="font-size:32px; font-weight:800; color:var(--text-main); margin:0;">PANDU-GI</h1>
+            <p style="color:var(--text-sub); margin-top:8px; margin-bottom:40px;">Pusat Bantuan Digital<br>Unit Gardu Induk</p>
+            
+            <div class="search-hero" tabindex="0">
+                <input type="text" id="unit-search-input" placeholder="Cari Unit Gardu Induk..." onclick="toggleUnitList()" readonly>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+
+            <div id="unit-list-container" class="unit-list-pop">
+                </div>
+            
+            <div style="margin-top:30px;">
+                <button onclick="hardReset()" style="background:none; border:none; color:var(--text-muted); font-size:12px; font-weight:600; cursor:pointer;">⚠️ Reset Aplikasi jika Error</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-header" class="header" style="display:none;">
+        <div class="app-logo">PANDU-GI</div>
+        <button class="btn-back-nav" id="back-btn" onclick="goHome()" style="display:none;">&larr;</button>
+    </div>
+
+    <div class="container" id="app-container" style="display:none;">
+        
+        <div id="main-menu">
+            <div class="dash-header">
+                <h2 class="dash-title">Hallo, Petugas 👋</h2>
+                <div class="dash-sub">
+                    <span>Lokasi:</span>
+                    <strong style="color:var(--primary)" id="dashboard-unit-name">...</strong>
+                    <span onclick="logout()" style="margin-left:auto; font-size:12px; color:var(--danger); cursor:pointer; background: #fee2e2; padding: 4px 8px; border-radius: 6px;">Ganti</span>
+                </div>
+            </div>
+
+            <div class="bento-grid">
+                <div class="bento-card bc-blue" onclick="openSection('section-annunciator')">
+                    <div class="bc-icon">🔔</div>
+                    <div class="bc-title">Annunciator</div>
+                    <div class="bc-desc">Cari Alarm</div>
+                </div>
+
+                <div class="bento-card bc-green" onclick="openSection('section-sop')">
+                    <div class="bc-icon">📘</div>
+                    <div class="bc-title">Buku SOP</div>
+                    <div class="bc-desc">File Offline</div>
+                </div>
+
+                <div class="bento-card bc-purple" onclick="openSection('section-asset')">
+                    <div class="bc-icon">⚡</div>
+                    <div class="bc-title">Data Peralatan</div>
+                    <div class="bc-desc">File Offline</div>
+                </div>
+
+                <div class="bento-card bc-orange" onclick="openSection('section-cloud')">
+                    <div class="bc-icon">☁️</div>
+                    <div class="bc-title">Akses DB</div>
+                    <div class="bc-desc">Google Drive</div>
+                </div>
+
+                <div class="bento-card bento-full bc-gray" onclick="openSection('section-backup')">
+                    <div class="bc-icon">💾</div>
+                    <div>
+                        <div class="bc-title">Backup & Restore</div>
+                        <div class="bc-desc">Amankan Data JSON</div>
+                    </div>
+                </div>
+
+                <div class="bento-card bc-gray" onclick="openSection('section-contact')">
+                    <div class="bc-icon">📞</div>
+                    <div class="bc-title">Kontak</div>
+                    <div class="bc-desc">Nomor Penting</div>
+                </div>
+
+                <div class="bento-card bc-gray" onclick="openSection('section-about')">
+                    <div class="bc-icon">ℹ️</div>
+                    <div class="bc-title">Tentang</div>
+                    <div class="bc-desc">Info & Tema</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-annunciator" class="app-section">
+            <h2 class="dash-title" style="margin-bottom:15px;">Database Alarm</h2>
+            <div class="input-group">
+                <input type="text" id="search-ann" placeholder="Ketik nama alarm..." oninput="renderAnnunciator()">
+            </div>
+            <button class="btn btn-primary" onclick="openModal('modal-ann')">+ Input Alarm Baru</button>
+            <div id="list-ann" style="margin-top:20px;"></div>
+        </div>
+
+        <div id="section-sop" class="app-section">
+            <div class="modern-card">
+                <div class="mc-header">
+                    <div class="mc-icon" style="background:var(--accent-green); color:var(--text-green);">📂</div>
+                    <div><div class="li-title">Simpan SOP Offline</div><div class="li-sub">Upload PDF ke aplikasi</div></div>
+                </div>
+                <input type="text" id="sop-name" placeholder="Judul SOP">
+                <input type="file" id="sop-file" accept="application/pdf">
+                <button class="btn btn-success" onclick="saveSOP()">Simpan PDF</button>
+            </div>
+            <h4 style="margin:20px 0 10px; color:var(--text-sub); font-size:12px; text-transform:uppercase;">File Tersimpan</h4>
+            <div id="list-sop"></div>
+        </div>
+
+        <div id="section-asset" class="app-section">
+            <div class="modern-card">
+                <div class="mc-header">
+                    <div class="mc-icon" style="background:var(--accent-purple); color:var(--text-purple);">⚡</div>
+                    <div><div class="li-title">Simpan Data Peralatan</div><div class="li-sub">Upload Manual Book / Gambar</div></div>
+                </div>
+                <input type="text" id="asset-name" placeholder="Judul Dokumen">
+                <input type="file" id="asset-file" accept="application/pdf">
+                <button class="btn btn-purple" onclick="saveAsset()">Simpan PDF</button>
+            </div>
+            <h4 style="margin:20px 0 10px; color:var(--text-sub); font-size:12px; text-transform:uppercase;">File Tersimpan</h4>
+            <div id="list-asset"></div>
+        </div>
+
+        <div id="section-cloud" class="app-section">
+            <div class="modern-card" style="text-align:center; padding:40px 20px;">
+                <div style="font-size:50px; margin-bottom:15px;">☁️</div>
+                <h3 style="margin:0 0 10px 0;">Google Drive Utama</h3>
+                <p style="color:var(--text-sub); font-size:14px; margin:0 0 25px 0;">Akses pusat seluruh data Gardu Induk secara online.</p>
+                <button class="btn btn-primary" onclick="openGDrive()">Buka Folder Drive ↗️</button>
+            </div>
+            <div class="modern-card">
+                <div class="li-sub" style="margin-bottom:10px;">Link Folder Drive</div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="in-gdrive-link" placeholder="Paste link..." style="margin:0;">
+                    <button class="btn btn-secondary" onclick="saveGDriveLink()" style="width:auto;">Simpan</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="section-backup" class="app-section">
+            <div class="modern-card">
+                <div class="mc-header">
+                    <div class="mc-icon" style="background:var(--accent-gray);">💾</div>
+                    <div><div class="li-title">Export Data</div><div class="li-sub">Simpan ke file JSON</div></div>
+                </div>
+                <button class="btn btn-secondary" onclick="exportData()">Download JSON ⬇️</button>
+            </div>
+
+            <div class="modern-card">
+                <div class="mc-header">
+                    <div class="mc-icon" style="background:var(--accent-gray);">🔄</div>
+                    <div><div class="li-title">Restore Data</div><div class="li-sub">Kembalikan data dari JSON</div></div>
+                </div>
+                <input type="file" id="import-file" accept=".json">
+                <button class="btn btn-success" onclick="importData()">Restore JSON</button>
+            </div>
+
+            <button class="btn btn-danger" onclick="resetApp()" style="margin-top:20px;">Reset Data Unit Ini</button>
+        </div>
+
+        <div id="section-contact" class="app-section">
+            <button class="btn btn-primary" onclick="openModal('modal-contact')">+ Tambah Kontak</button>
+            <div id="list-contact" style="margin-top:20px;"></div>
+        </div>
+
+        <div id="section-about" class="app-section">
+            <div class="modern-card">
+                <h3 style="margin-top:0;">Tampilan</h3>
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
+                    <span>Mode Gelap</span>
+                    <input type="checkbox" id="theme-toggle" onchange="toggleTheme()" style="width:20px; height:20px;">
+                </div>
+            </div>
+            <div class="modern-card">
+                <div style="text-align:center;">
+                    <h2 style="color:var(--primary); margin:0;">PANDU-GI</h2>
+                    <p style="font-weight:700; color:var(--text-sub); font-size:12px; margin:5px 0 20px 0;">Pusat Bantuan Digital Unit Gardu Induk</p>
+                    <p style="font-size:14px; line-height:1.6; color:var(--text-main);">
+                        "Inovasi cerdas untuk era digitalisasi energi. Memastikan efisiensi operasional dan keandalan sistem dalam satu genggaman."
+                    </p>
+                    <div style="margin-top:20px; font-size:11px; color:var(--text-muted);">Versi 2.0 (Mobile Hybrid)</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="modal-ann" class="overlay">
+        <div class="modal-sheet">
+            <div class="modal-title">Form Alarm <button class="close-btn" onclick="closeModal('modal-ann')">✕</button></div>
+            <input type="hidden" id="ann-id">
+            <input id="ann-unit" placeholder="Unit / Bay">
+            <input id="ann-name" placeholder="Nama Alarm">
+            <textarea id="ann-ind" rows="2" placeholder="Indikasi"></textarea>
+            <textarea id="ann-cause" rows="2" placeholder="Penyebab"></textarea>
+            <textarea id="ann-act" rows="2" placeholder="Tindakan"></textarea>
+            <button class="btn btn-primary" onclick="saveAnnItem()" style="margin-top:10px;">Simpan Data</button>
+        </div>
+    </div>
+
+    <div id="modal-contact" class="overlay">
+        <div class="modal-sheet">
+            <div class="modal-title">Data Kontak <button class="close-btn" onclick="closeModal('modal-contact')">✕</button></div>
+            <input type="hidden" id="cont-id">
+            <input id="cont-name" placeholder="Nama">
+            <input type="tel" id="cont-num" placeholder="Nomor Telepon">
+            <button class="btn btn-primary" onclick="saveContactItem()" style="margin-top:10px;">Simpan Kontak</button>
+        </div>
+    </div>
+
+    <div id="pdf-viewer" class="pdf-viewer">
+        <div class="pdf-nav">
+            <b id="pdf-title" style="font-size:16px;">Dokumen</b>
+            <button onclick="closePDF()" style="border:none; background:rgba(0,0,0,0.05); padding:8px 12px; border-radius:20px; font-weight:700;">Tutup</button>
+        </div>
+        <iframe id="pdf-frame" class="pdf-frame"></iframe>
+    </div>
+
+    <div id="loader"><div class="spinner"></div></div>
+    <div id="toast">Berhasil disimpan</div>
+
+<script>
+// --- CONFIG ---
+const UNITS = [
+    { id: 'fajar', name: 'GI 150 KV FAJAR SURYAWISESA' },
+    { id: 'gandamekar', name: 'GI 150 KV GANDAMEKAR' },
+    { id: 'cikarang', name: 'GI 150 KV CIKARANG' },
+    { id: 'jababeka', name: 'GI 150 KV JABABEKA' },
+    { id: 'rajapaksi', name: 'GI 150 KV RAJAPAKSI' },
+    { id: 'poncol', name: 'GI 150 KV PONCOL BARU' },
+    { id: 'tambun', name: 'GI 150 KV TAMBUN' },
+    { id: 'margahayu', name: 'GIS 150 KV MARGAHAYU' },
+    { id: 'new_tambun_tet', name: 'GISTET 500 KV NEW TAMBUN' },
+    { id: 'muaratawar', name: 'GITET 500 KV MUARATAWAR' },
+    { id: 'new_tambun_gis', name: 'GIS 150 KV NEW TAMBUN' }
+];
+const DEFAULT_LINK = "https://drive.google.com/drive/folders/13vT0iXCJLjer9sMS5VWI5jjchFk4ntmo?usp=sharing";
+
+// VARIABLES
+let currentUnitId = null;
+let db = { anns: [], contacts: [] };
+let idb;
+let driveLink = "";
+
+// --- INIT ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Theme Check
+    if(localStorage.getItem('pandu_theme') === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('theme-toggle').checked = true;
+    }
+    checkSession();
+});
+
+// --- LOGIN ---
+function checkSession() {
+    const saved = localStorage.getItem('pandu_active_unit');
+    if(saved) login(saved); else renderUnitList();
+}
+
+function renderUnitList() {
+    const container = document.getElementById('unit-list-container');
+    container.innerHTML = '';
+    UNITS.forEach(u => {
+        const div = document.createElement('div');
+        div.className = 'unit-item';
+        div.innerHTML = `<span>⚡</span> ${u.name}`;
+        div.onclick = () => login(u.id);
+        container.appendChild(div);
+    });
+}
+
+function toggleUnitList() {
+    const list = document.getElementById('unit-list-container');
+    list.style.display = list.style.display === 'block' ? 'none' : 'block';
+}
+
+function login(unitId) {
+    const unit = UNITS.find(u => u.id === unitId);
+    if(!unit) { hardReset(); return; }
+
+    currentUnitId = unitId;
+    localStorage.setItem('pandu_active_unit', unitId);
+
+    // Load Data
+    try {
+        const saved = localStorage.getItem(`pandu_db_${unitId}`);
+        if(saved) {
+            let t = JSON.parse(saved);
+            if(t.alarms) { t.anns = t.alarms.map(x=>({id:x.id||Date.now(), unit:x.s, name:x.a, ind:x.m, cause:x.p, act:x.t})); delete t.alarms; }
+            db = t; if(!db.anns) db.anns=[];
+        } else db = { anns: [], contacts: [] };
+    } catch(e) { db = { anns: [], contacts: [] }; }
+
+    driveLink = localStorage.getItem(`pandu_drive_${unitId}`) || DEFAULT_LINK;
+    document.getElementById('in-gdrive-link').value = driveLink;
+
+    initIndexedDB(unitId);
+    document.getElementById('dashboard-unit-name').innerText = unit.name;
+    document.getElementById('header-unit-name').innerText = unit.name;
+    
+    // Animasi Transisi
+    document.getElementById('unit-select-screen').style.display = 'none';
+    document.getElementById('app-header').style.display = 'none'; // Header hidden on dashboard
+    document.getElementById('app-container').style.display = 'block';
+    goHome();
+}
+
+function logout() { if(confirm('Ganti Unit?')) { localStorage.removeItem('pandu_active_unit'); location.reload(); } }
+function hardReset() { if(confirm('Reset Total?')) { localStorage.clear(); location.reload(); } }
+
+// --- NAVIGATION ---
+function goHome() {
+    document.querySelectorAll('.app-section').forEach(e => e.classList.remove('active'));
+    document.getElementById('main-menu').style.display = 'block';
+    document.getElementById('app-header').style.display = 'none';
+    window.scrollTo(0,0);
+}
+
+function openSection(id) {
+    document.getElementById('main-menu').style.display = 'none';
+    document.getElementById(id).classList.add('active');
+    document.getElementById('app-header').style.display = 'flex';
+    document.getElementById('back-btn').style.display = 'flex';
+    
+    if(id==='section-annunciator') renderAnnunciator();
+    if(id==='section-contact') renderContact();
+    if(id==='section-sop') renderFiles('sops', 'list-sop');
+    if(id==='section-asset') renderFiles('assets', 'list-asset');
+}
+
+// --- LOGIC ---
+function renderAnnunciator() {
+    const list = document.getElementById('list-ann');
+    const k = document.getElementById('search-ann').value.toLowerCase();
+    list.innerHTML = "";
+    
+    const f = db.anns.filter(x => (x.unit+x.name+x.ind+x.cause+x.act).toLowerCase().includes(k));
+    if(f.length===0) return list.innerHTML = "<div class='empty-state'>Data tidak ditemukan</div>";
+    
+    f.forEach(i => {
+        list.innerHTML += `
+        <div class="modern-card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span class="data-badge" style="background:var(--accent-blue); color:var(--text-blue); font-size:11px; padding:4px 8px; border-radius:6px; font-weight:700;">${i.unit}</span>
+                <div style="display:flex; gap:10px;">
+                    <span onclick="editAnn('${i.id}')" style="cursor:pointer;">✏️</span>
+                    <span onclick="delAnn('${i.id}')" style="cursor:pointer; color:var(--danger);">🗑️</span>
+                </div>
+            </div>
+            <div style="font-weight:800; font-size:16px; margin-bottom:10px; color:var(--primary);">${i.name}</div>
+            <div class="data-item"><div class="data-label">Indikasi</div><div class="data-value">${i.ind}</div></div>
+            <div class="data-item"><div class="data-label">Penyebab</div><div class="data-value">${i.cause}</div></div>
+            <div class="data-item"><div class="data-label">Tindakan</div><div class="data-value">${i.act}</div></div>
+        </div>`;
+    });
+}
+
+function saveAnnItem() {
+    const id = document.getElementById('ann-id').value || Date.now().toString();
+    const item = { id:id, unit:document.getElementById('ann-unit').value, name:document.getElementById('ann-name').value, ind:document.getElementById('ann-ind').value, cause:document.getElementById('ann-cause').value, act:document.getElementById('ann-act').value };
+    if(!item.name) return alert("Isi Nama Alarm");
+    const idx = db.anns.findIndex(x=>x.id==id);
+    if(idx>-1) db.anns[idx]=item; else db.anns.unshift(item);
+    saveDB(); closeModal('modal-ann'); renderAnnunciator(); showToast("Disimpan");
+}
+function editAnn(id) {
+    const i = db.anns.find(x=>x.id==id);
+    document.getElementById('ann-id').value=i.id; document.getElementById('ann-unit').value=i.unit; document.getElementById('ann-name').value=i.name; document.getElementById('ann-ind').value=i.ind; document.getElementById('ann-cause').value=i.cause; document.getElementById('ann-act').value=i.act;
+    openModal('modal-ann');
+}
+function delAnn(id) { if(confirm("Hapus?")) { db.anns = db.anns.filter(x=>x.id!=id); saveDB(); renderAnnunciator(); } }
+
+function renderContact() {
+    const l = document.getElementById('list-contact'); l.innerHTML="";
+    db.contacts.forEach(c => {
+        l.innerHTML += `<div class="list-item"><div class="li-content"><div class="li-title">${c.name}</div><div class="li-sub" style="color:var(--primary)">${c.num}</div></div><button class="delete-btn" style="position:static" onclick="delCont('${c.id}')">✕</button></div>`;
+    });
+}
+function saveContactItem() {
+    const i = { id:Date.now().toString(), name:document.getElementById('cont-name').value, num:document.getElementById('cont-num').value };
+    if(!i.name) return; db.contacts.push(i); saveDB(); closeModal('modal-contact'); renderContact();
+}
+function delCont(id) { if(confirm("Hapus?")) { db.contacts=db.contacts.filter(c=>c.id!=id); saveDB(); renderContact(); } }
+
+// FILE SYSTEM
+function initIndexedDB(uid) {
+    const r = indexedDB.open(`PANDU_V2_${uid}`, 1);
+    r.onupgradeneeded = e => { const d=e.target.result; if(!d.objectStoreNames.contains('sops')) d.createObjectStore('sops',{keyPath:'id',autoIncrement:true}); if(!d.objectStoreNames.contains('assets')) d.createObjectStore('assets',{keyPath:'id',autoIncrement:true}); };
+    r.onsuccess = e => { idb = e.target.result; };
+}
+function saveFile(store, nid, fid) {
+    const name = document.getElementById(nid).value; const file = document.getElementById(fid).files[0];
+    if(!name || !file) return alert("Lengkapi Data!");
+    document.getElementById('loader').style.display='flex';
+    const reader = new FileReader();
+    reader.onload = e => {
+        const tx = idb.transaction(store, 'readwrite');
+        tx.objectStore(store).add({ name:name, blob:new Blob([e.target.result], {type:'application/pdf'}), date:new Date().toLocaleDateString() });
+        tx.oncomplete = () => { document.getElementById('loader').style.display='none'; showToast("Disimpan Offline"); document.getElementById(nid).value=""; document.getElementById(fid).value=""; renderFiles(store, store==='sops'?'list-sop':'list-asset'); };
+    };
+    reader.readAsArrayBuffer(file);
+}
+function renderFiles(store, lid) {
+    const l = document.getElementById(lid); l.innerHTML='Loading...';
+    setTimeout(() => {
+        const tx = idb.transaction(store, 'readonly');
+        tx.objectStore(store).getAll().onsuccess = e => {
+            const files = e.target.result.reverse();
+            l.innerHTML = "";
+            files.forEach(f => {
+                l.innerHTML += `<div class="list-item"><div class="li-content"><div class="li-title">${f.name}</div><div class="li-sub">${f.date}</div></div><button class="btn-xs btn-secondary" onclick="viewPDF('${store}',${f.id},'${f.name}')">Buka</button><button class="btn-xs btn-danger" style="margin-left:5px;" onclick="delFile('${store}',${f.id})">✕</button></div>`;
+            });
+        };
+    }, 500);
+}
+function viewPDF(store, id, title) {
+    document.getElementById('loader').style.display='flex';
+    idb.transaction(store, 'readonly').objectStore(store).get(id).onsuccess = e => {
+        document.getElementById('loader').style.display='none';
+        const url = URL.createObjectURL(e.target.result.blob);
+        document.getElementById('pdf-title').innerText = title;
+        document.getElementById('pdf-frame').src = url;
+        document.getElementById('pdf-viewer').style.display='flex';
+    };
+}
+function delFile(store, id) { if(confirm("Hapus?")) { const tx=idb.transaction(store,'readwrite'); tx.objectStore(store).delete(id).oncomplete=()=>renderFiles(store, store==='sops'?'list-sop':'list-asset'); } }
+
+// UTILS
+function saveDB() { localStorage.setItem(`pandu_db_${currentUnitId}`, JSON.stringify(db)); }
+function saveGDriveLink() { const l=document.getElementById('in-gdrive-link').value; localStorage.setItem(`pandu_drive_${currentUnitId}`, l); driveLink=l; showToast("Link Disimpan"); }
+function openGDrive() { window.open(driveLink || DEFAULT_LINK, '_blank'); }
+function exportData() { const s=JSON.stringify(db); const b=new Blob([s],{type:"application/json"}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=`BACKUP_${currentUnitId}.json`; a.click(); }
+function importData() { const f=document.getElementById('import-file').files[0]; if(!f)return; const r=new FileReader(); r.onload=e=>{ if(confirm('Timpa data?')){ try{ db=JSON.parse(e.target.result); saveDB(); location.reload(); }catch(x){alert('File rusak');} } }; r.readAsText(f); }
+function resetApp() { if(confirm('Hapus data unit ini?')) { localStorage.removeItem(`pandu_db_${currentUnitId}`); indexedDB.deleteDatabase(`PANDU_V2_${currentUnitId}`); location.reload(); } }
+function toggleTheme() { const t=document.getElementById('theme-toggle').checked?'dark':'light'; document.documentElement.setAttribute('data-theme', t); localStorage.setItem('pandu_theme', t); }
+
+function openModal(id) { 
+    document.getElementById(id).style.display='flex'; 
+    if(id==='modal-ann') ['ann-id','ann-unit','ann-name','ann-ind','ann-cause','ann-act'].forEach(k=>document.getElementById(k).value='');
+    if(id==='modal-contact') ['cont-id','cont-name','cont-num'].forEach(k=>document.getElementById(k).value='');
+}
+function closeModal(id) { document.getElementById(id).style.display='none'; }
+function closePDF() { document.getElementById('pdf-viewer').style.display='none'; }
+function showToast(msg) { const t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',2000); }
+</script>
+</body>
+</html>
